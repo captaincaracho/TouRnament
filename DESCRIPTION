@@ -1,11 +1,11 @@
 Package: TouRnament
 Type: Package
-Title: What the Package Does (Title Case)
+Title: Package with functions related to sports competitions
 Version: 0.1.0
-Author: Who wrote it
-Maintainer: The package maintainer <yourself@somewhere.net>
-Description: More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
-License: What license is it under?
+Author: Tobias Wolfanger
+Maintainer: Tobias Wolfanger <tobias.wolfanger@gmx.de>
+Description: A package with functions related to sports competitions. Currently only a round robin function is implemented.
+License: GPL-2
 Encoding: UTF-8
 LazyData: true
+RoxygenNote: 6.1.0
