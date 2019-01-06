@@ -26,7 +26,7 @@ roundrobin <- function(teamvector,second_round = TRUE,match_free = TRUE,randomiz
 
   try(if(typeof(randomize)!="logical") stop("randomize has to be logical"))
 
-  #ry(if(typeof(seed)!="double") stop("seed has to be an integer"))
+  if(missing(seed)==FALSE) {try(if(typeof(seed)!="double") stop("seed has to be an integer"))}
 
   #compensate for odd teams numbers
   if(length(teamvector)%%2==1) {teamvector <- append(teamvector, "free")}
