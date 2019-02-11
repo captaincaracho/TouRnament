@@ -16,6 +16,9 @@
 #'roundrobin(teamvector=LETTERS[1:18],second_round=TRUE,match_free=TRUE,randomize=TRUE)
 #'@export
 
+
+roundrobin(teamvector=LETTERS[1:18],second_round=TRUE,match_free=TRUE,randomize=TRUE)
+
 roundrobin <- function(teamvector,second_round = TRUE,match_free = TRUE,randomize = TRUE , seed) {
 
   try(if(length(teamvector)<5) stop("number of teams has to be at least 5"))
@@ -53,6 +56,7 @@ roundrobin <- function(teamvector,second_round = TRUE,match_free = TRUE,randomiz
   for(day in 1:(length(teams)-1)){
 
     if (day == 1){
+
       #initialize dataset
       schedule  <- data.frame(Team1=integer(),Team2=integer(),Matchday=integer(), stringsAsFactors = FALSE)
 
@@ -62,34 +66,24 @@ roundrobin <- function(teamvector,second_round = TRUE,match_free = TRUE,randomiz
       left1  <- teams[1]
       left2  <- length(teams)
 
-      #save first matches
-      schedule[1:length(up),"Team1"]                          <- up
-      schedule[1:length(down),"Team2"]                        <- down
-      schedule[length(teams)/2, "Team1"]                      <- left1
-      schedule[length(teams)/2, "Team2"]                      <- left2
-      schedule[1:(length(teams)/2),"Matchday"]                <- day
-  }
+    }else {
 
-
-
-    if(day > 1 ) {
-
-      #rotate lower side
+      #rotate
       left2old <- left2
       left2    <- up[1]
       up       <- append(up[2:length(up)],down[length(down)])
       down     <- append(left2old,down[1:(length(down)-1)])
 
-      #save matches
-      rows <- nrow(schedule)
-
-      schedule[(rows+1):(rows+length(up)),"Team1"]            <- up
-      schedule[(rows+1):(rows+length(down)),"Team2"]          <- down
-      schedule[(rows+length(up)+1), "Team1"]                  <- left1
-      schedule[(rows+length(up)+1), "Team2"]                  <- left2
-      schedule[(rows+1):(rows+(length(teams)/2)),"Matchday"]  <- day
-
     }
+
+    #save matches
+    rows <- nrow(schedule)
+
+    schedule[(rows+1):(rows+length(up)),"Team1"]            <- up
+    schedule[(rows+1):(rows+length(down)),"Team2"]          <- down
+    schedule[(rows+length(up)+1), "Team1"]                  <- left1
+    schedule[(rows+length(up)+1), "Team2"]                  <- left2
+    schedule[(rows+1):(rows+(length(teams)/2)),"Matchday"]  <- day
 
   }
 
