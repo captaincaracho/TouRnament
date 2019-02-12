@@ -17,6 +17,8 @@
 #'@export
 
 
+roundrobin(teamvector=LETTERS[1:18],second_round=TRUE,match_free=TRUE,randomize=TRUE)
+
 roundrobin <- function(teamvector,second_round = TRUE,match_free = TRUE,randomize = TRUE , seed) {
 
   try(if(length(teamvector)<5) stop("number of teams has to be at least 5"))
