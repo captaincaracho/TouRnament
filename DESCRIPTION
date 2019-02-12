@@ -1,7 +1,7 @@
 Package: TouRnament
 Type: Package
 Title: Package with functions related to sports competitions
-Version: 0.1.1
+Version: 0.2.0
 Author: Tobias Wolfanger
 Maintainer: Tobias Wolfanger <tobias.wolfanger@gmx.de>
 Description: A package with functions related to sports competitions. Currently only a round robin function is implemented.
