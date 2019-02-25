@@ -27,9 +27,9 @@ leaguetable(dataset, home, away, score_home, score_away, date, date_start,
 
 \item{matchday}{The name of the matchday column in the dataset as a chracter string (optional).}
 
-\item{matchday_start}{The earliest  matchday to include if not the earliest in the dataset as an integer (optional). Not yet implemented.}
+\item{matchday_start}{The earliest  matchday to include if not the earliest in the dataset as an integer (optional).}
 
-\item{matchday_end}{The last matchday to include if not the last dataset as an integer (optional). Not yet implemented.}
+\item{matchday_end}{The last matchday to include if not the last dataset as an integer (optional).}
 
 \item{points}{A vector of integers of length three containing the points awarded for wins, draws and losses. Defaults to c(3,1,0).}
 
@@ -42,6 +42,14 @@ A data frame in the form of a league table.
 }
 \description{
 Create a league table from individually defined criteria from a results dataset.
+}
+\details{
+Mandatory parameters are a dataset with match results as well the names of the variables for home and away team and their respective scored goals.
+
+Optional parameters are the point distribution that will be awarded (win, draw, lose), the order of ranking criteria to use (Pts = Points, GD = Goal difference, GF = Goals for),
+the display of additional columns with separate home and away tables and the dates and matchdays to be used for calculation.
+
+If a date range and a matchday range are set, the subset of matches that fit both selection criteria will be used for calculation.
 }
 \examples{
 #create league table for La Liga 1994/95 with three points reward, only games in 1995 with home and away results

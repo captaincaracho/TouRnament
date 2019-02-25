@@ -2,6 +2,14 @@
 #'
 #'Create a league table from individually defined criteria from a results dataset.
 #'
+#'Mandatory parameters are a dataset with match results as well the names of the variables for home and away team and their respective scored goals.
+#'
+#'Optional parameters are the point distribution that will be awarded (win, draw, lose), the order of ranking criteria to use (Pts = Points, GD = Goal difference, GF = Goals for),
+#'the display of additional columns with separate home and away tables and the dates and matchdays to be used for calculation.
+#'
+#'If a date range and a matchday range are set, the subset of matches that fit both selection criteria will be used for calculation.
+#'
+#'
 #'@param dataset A dataset with the results.
 #'@param home The name of the home team column in the dataset as a character string.
 #'@param away The name of the away team column in the dataset  as a character string.
@@ -11,8 +19,8 @@
 #'@param date_start The earliest date to include if not the earliest date in the dataset as a charcter string in the format "YY-mm-dd" (optional).
 #'@param date_end The last date to include if not the last date in the dataset as character string in the format "YY-mm-dd" (optional).
 #'@param matchday The name of the matchday column in the dataset as a chracter string (optional).
-#'@param matchday_start The earliest  matchday to include if not the earliest in the dataset as an integer (optional). Not yet implemented.
-#'@param matchday_end The last matchday to include if not the last dataset as an integer (optional). Not yet implemented.
+#'@param matchday_start The earliest  matchday to include if not the earliest in the dataset as an integer (optional).
+#'@param matchday_end The last matchday to include if not the last dataset as an integer (optional).
 #'@param points A vector of integers of length three containing the points awarded for wins, draws and losses. Defaults to c(3,1,0).
 #'@param HA_table Logical value to indicate, whether home and away results should be displayed in the table. Defaults to FALSE.
 #'@param rank_by A character vector with the order of arguments to sort the league table. Possible arguments are "Pts", "GD", "GF", "GA", "W","D","L", Defaults to c("Pts","GD","GF").
@@ -63,7 +71,21 @@ leaguetable <- function(dataset, home, away, score_home, score_away, date, date_
     include_names <- append(include_names, "matchday")
     optionals     <- append(optionals, "matchday")
     names_itr     <- append(names_itr,"Matchday")
+
+    #if matchday is provided, get start and end matchday, if not provided set to min respectively max
+    if(missing(matchday_start)==FALSE) {
+      matchday_start <- matchday_start
+    }else {
+      matchday_start <- min(dataset$Matchday)
+    }
+
+    if(missing(matchday_end)==FALSE) {
+      matchday_end <- matchday_end
+    }else {
+      matchday_end <- max(dataset$Matchday)
+    }
   }
+
 
   #get to default format of results
   ds <- dataset[,include]
@@ -98,6 +120,12 @@ leaguetable <- function(dataset, home, away, score_home, score_away, date, date_
     ds2     <- ds2[which(ds2$Date >= date_start & ds2$Date <= date_end),]
   }
 
+  #reduce to relevant matchdays if date is provided
+  if(missing(matchday)==FALSE) {
+    ds2     <- ds2[which(ds2$Matchday >= matchday_start & ds2$Matchday <= matchday_end),]
+  }
+
+
   #get points
   ds2$Pts <- ifelse(ds2$GF>ds2$GA,points[1],ifelse(ds2$GF<ds2$GA,points[3],points[2]))
 
@@ -114,7 +142,7 @@ leaguetable <- function(dataset, home, away, score_home, score_away, date, date_
   #compute goal difference
   table$GD              <- table$GF - table$GA
 
-  #create home an away tables ih HA_tables = TRUE
+  #create home and away tables if HA_tables = TRUE
   if (HA_tables == TRUE) {
 
     tableHA               <- aggregate(list(ds2$P, ds2$W, ds2$D, ds2$L, ds2$Pts, ds2$GF, ds2$GA), by=list(ds2$Team,ds2$location), FUN=sum)
