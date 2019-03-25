@@ -16,11 +16,11 @@
 #'@param score_home The name of the home team goals column in the dataset as a character string.
 #'@param score_away The name of the away team goals column in the dataset as a character string.
 #'@param date The name of the date column in the dataset as a character string (optional).
-#'@param date_start The earliest date to include if not the earliest date in the dataset as a charcter string in the format "YY-mm-dd" (optional).
+#'@param date_start The earliest date to include if not the earliest date in the dataset as a character string in the format "YY-mm-dd" (optional).
 #'@param date_end The last date to include if not the last date in the dataset as character string in the format "YY-mm-dd" (optional).
-#'@param matchday The name of the matchday column in the dataset as a chracter string (optional).
-#'@param matchday_start The earliest  matchday to include if not the earliest in the dataset as an integer (optional).
-#'@param matchday_end The last matchday to include if not the last dataset as an integer (optional).
+#'@param matchday The name of the matchday column in the dataset as a character string (optional).
+#'@param matchday_start The earliest matchday to include if not the earliest in the dataset as an integer (optional).
+#'@param matchday_end The last matchday to include if not the last in the dataset as an integer (optional).
 #'@param points A vector of integers of length three containing the points awarded for wins, draws and losses. Defaults to c(3,1,0).
 #'@param HA_table Logical value to indicate, whether home and away results should be displayed in the table. Defaults to FALSE.
 #'@param rank_by A character vector with the order of arguments to sort the league table. Possible arguments are "Pts", "GD", "GF", "GA", "W","D","L", Defaults to c("Pts","GD","GF").
@@ -42,9 +42,10 @@ leaguetable <- function(dataset, home, away, score_home, score_away, date, date_
   #add optional arguments to include
   optionals <- vector()
 
-  #name vector for indiviuadl team results
+  #name vector for individual team results
   names_itr <- c("Team","GF","GA")
 
+  #set date range
   if(missing(date)==FALSE) {
     include       <- append(include, date)
     include_names <- append(include_names, "date")
@@ -66,6 +67,7 @@ leaguetable <- function(dataset, home, away, score_home, score_away, date, date_
     }
   }
 
+  #set matchday range
   if(missing(matchday)==FALSE) {
     include       <- append(include, matchday)
     include_names <- append(include_names, "matchday")
@@ -87,33 +89,39 @@ leaguetable <- function(dataset, home, away, score_home, score_away, date, date_
   }
 
 
-  #get to default format of results
-  ds <- dataset[,include]
+  #reduce to relevant dataset
+  ds        <- dataset[,include]
   names(ds) <- include_names
 
-  #make datset of inidivual team results
+  #create dataset of inidividual team results
   hs <- ds[,c("home","score_home","score_away",optionals)]
   names(hs) <- names_itr
   hs$location <- "H"
   as <- ds[,c("away","score_away","score_home",optionals)]
   names(as) <- names_itr
   as$location <- "A"
-
   ds2 <- rbind(hs,as)
 
-  #Get inverted dataset for direct comparison lookup
-  dsinv            <- ds
-  dsinv$home       <- ds$away
-  dsinv$away       <- ds$home
-  dsinv$score_home <- ds$score_away
-  dsinv$score_away <- ds$score_home
 
-  #bind original and inverted dataset
-  ds3 <- rbind(ds,dsinv)
+  #create lookup table for direct comparison feature, which is not yet implemented
+  if(FALSE){
 
-  #aggregate
-  dclookup <- aggregate(list(ds3$score_home,ds3$score_away), by=list(ds3$home, ds3$away), FUN=sum)
-  names(dclookup) <- c("Team1", "Team2", "Score1", "Score2")
+    #get inverted dataset for direct comparison lookup
+    dsinv            <- ds
+    dsinv$home       <- ds$away
+    dsinv$away       <- ds$home
+    dsinv$score_home <- ds$score_away
+    dsinv$score_away <- ds$score_home
+
+    #bind original and inverted dataset
+    ds3 <- rbind(ds,dsinv)
+
+    #aggregate
+    dclookup <- aggregate(list(ds3$score_home,ds3$score_away), by=list(ds3$home, ds3$away), FUN=sum)
+    names(dclookup) <- c("Team1", "Team2", "Score1", "Score2")
+  }
+
+
 
   #reduce to relevant timeframe if date is provided
   if(missing(date)==FALSE) {
@@ -125,17 +133,16 @@ leaguetable <- function(dataset, home, away, score_home, score_away, date, date_
     ds2     <- ds2[which(ds2$Matchday >= matchday_start & ds2$Matchday <= matchday_end),]
   }
 
-
-  #get points
+  #calculate points
   ds2$Pts <- ifelse(ds2$GF>ds2$GA,points[1],ifelse(ds2$GF<ds2$GA,points[3],points[2]))
 
-  #get wins, draws, losses
+  #calculate games played, wins, draws, losses ###needs to be worked over, because equal points for two outcomes would distort calculation
   ds2$W   <- ifelse(ds2$Pts == points[1],1,0)
   ds2$D   <- ifelse(ds2$Pts == points[2],1,0)
   ds2$L   <- ifelse(ds2$Pts == points[3],1,0)
   ds2$P   <- 1
 
-  #create table by aggregating all wanted statistics by team
+  #create table by aggregating all desired statistics by team
   table                 <- aggregate(list(ds2$P, ds2$W, ds2$D, ds2$L, ds2$Pts, ds2$GF, ds2$GA), by=list(ds2$Team), FUN=sum)
   names(table)          <- c("Team","P","W","D","L","Pts","GF","GA")
 
@@ -145,14 +152,17 @@ leaguetable <- function(dataset, home, away, score_home, score_away, date, date_
   #create home and away tables if HA_tables = TRUE
   if (HA_tables == TRUE) {
 
+    #aggregate
     tableHA               <- aggregate(list(ds2$P, ds2$W, ds2$D, ds2$L, ds2$Pts, ds2$GF, ds2$GA), by=list(ds2$Team,ds2$location), FUN=sum)
     names(tableHA)        <- c("Team","Location","P","W","D","L","Pts","GF","GA")
 
+    #create home table
     tableH                <- tableHA[which(tableHA$Location=="H"),]
     names(tableH)         <- c("Team","Location","P_H","W_H","D_H","L_H","Pts_H","GF_H","GA_H")
     tableH$GD_H           <- tableH$GF_H - tableH$GA_H
     tableH$Location       <- NULL
 
+    #create away tablöe
     tableA                <- tableHA[which(tableHA$Location=="A"),]
     names(tableA)         <- c("Team","Location","P_A","W_A","D_A","L_A","Pts_A","GF_A","GA_A")
     tableA$GD_A           <- tableA$GF_A - tableA$GA_A
