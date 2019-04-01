@@ -6,7 +6,7 @@
 \usage{
 leaguetable(dataset, home, away, score_home, score_away, date, date_start,
   date_end, matchday, matchday_start, matchday_end, points = c(3, 1, 0),
-  rank_by = c("Pts", "GD", "GF"), HA_tables = FALSE)
+  DC = FALSE, rank_by = c("GD", "GF"), HA_tables = FALSE)
 }
 \arguments{
 \item{dataset}{A dataset with the results.}
@@ -21,21 +21,23 @@ leaguetable(dataset, home, away, score_home, score_away, date, date_start,
 
 \item{date}{The name of the date column in the dataset as a character string (optional).}
 
-\item{date_start}{The earliest date to include if not the earliest date in the dataset as a charcter string in the format "YY-mm-dd" (optional).}
+\item{date_start}{The earliest date to include if not the earliest date in the dataset as a character string in the format "YY-mm-dd" (optional).}
 
 \item{date_end}{The last date to include if not the last date in the dataset as character string in the format "YY-mm-dd" (optional).}
 
-\item{matchday}{The name of the matchday column in the dataset as a chracter string (optional).}
+\item{matchday}{The name of the matchday column in the dataset as a character string (optional).}
 
-\item{matchday_start}{The earliest  matchday to include if not the earliest in the dataset as an integer (optional).}
+\item{matchday_start}{The earliest matchday to include if not the earliest in the dataset as an integer (optional).}
 
-\item{matchday_end}{The last matchday to include if not the last dataset as an integer (optional).}
+\item{matchday_end}{The last matchday to include if not the last in the dataset as an integer (optional).}
 
 \item{points}{A vector of integers of length three containing the points awarded for wins, draws and losses. Defaults to c(3,1,0).}
 
-\item{rank_by}{A character vector with the order of arguments to sort the league table. Possible arguments are "Pts", "GD", "GF", "GA", "W","D","L", Defaults to c("Pts","GD","GF").}
+\item{DC}{Logical value to indicate whether direct comparison of teams with equal points should be applied. The ranking of teams with equal numbers of points use the same order as defined in rank_by.}
 
-\item{HA_table}{Logical value to indicate, whether home and away results should be displayed in the table. Defaults to FALSE.}
+\item{rank_by}{A character vector with the order of arguments to sort the league table following "Pts". Possible arguments are "GD", "GF", "GA", "W","D","L", Defaults to c("GD","GF").}
+
+\item{HA_table}{Logical value to indicate whether home and away results should be displayed in the table. Defaults to FALSE.}
 }
 \value{
 A data frame in the form of a league table.
@@ -52,7 +54,7 @@ the display of additional columns with separate home and away tables and the dat
 If a date range and a matchday range are set, the subset of matches that fit both selection criteria will be used for calculation.
 }
 \examples{
-#create league table for La Liga 1994/95 with three points reward, only games in 1995 with home and away results
+#create league table for La Liga 1994/95 with two points rewards with home and away results
 library(engsoccerdata)
-leaguetable(dataset=engsoccerdata::spain[which(engsoccerdata::spain$Season==1994),], home="home", away="visitor", score_home="hgoal", score_away="vgoal", date="Date", date_start="1995-01-01", date_end="1995-06-30", points = c(3,1,0), HA_tables = TRUE)
+leaguetable(dataset=engsoccerdata::spain[which(engsoccerdata::spain$Season==1994),], home="home", away="visitor", score_home="hgoal", score_away="vgoal", date="Date", points = c(2,1,0), HA_tables = TRUE, DC = TRUE)
 }

@@ -22,18 +22,22 @@
 #'@param matchday_start The earliest matchday to include if not the earliest in the dataset as an integer (optional).
 #'@param matchday_end The last matchday to include if not the last in the dataset as an integer (optional).
 #'@param points A vector of integers of length three containing the points awarded for wins, draws and losses. Defaults to c(3,1,0).
-#'@param HA_table Logical value to indicate, whether home and away results should be displayed in the table. Defaults to FALSE.
-#'@param rank_by A character vector with the order of arguments to sort the league table. Possible arguments are "Pts", "GD", "GF", "GA", "W","D","L", Defaults to c("Pts","GD","GF").
+#'@param HA_table Logical value to indicate whether home and away results should be displayed in the table. Defaults to FALSE.
+#'@param rank_by A character vector with the order of arguments to sort the league table following "Pts". Possible arguments are "GD", "GF", "GA", "W","D","L", Defaults to c("GD","GF").
+#'@param DC Logical value to indicate whether direct comparison of teams with equal points should be applied. The ranking of teams with equal numbers of points use the same order as defined in rank_by.
 #'@return A data frame in the form of a league table.
 #'@examples
-#'#create league table for La Liga 1994/95 with three points reward, only games in 1995 with home and away results
+#'#create league table for La Liga 1994/95 with two points rewards with home and away results
 #'library(engsoccerdata)
-#'leaguetable(dataset=engsoccerdata::spain[which(engsoccerdata::spain$Season==1994),], home="home", away="visitor", score_home="hgoal", score_away="vgoal", date="Date", date_start="1995-01-01", date_end="1995-06-30", points = c(3,1,0), HA_tables = TRUE)
+#'leaguetable(dataset=engsoccerdata::spain[which(engsoccerdata::spain$Season==1994),], home="home", away="visitor", score_home="hgoal", score_away="vgoal", date="Date", points = c(2,1,0), HA_tables = TRUE, DC = TRUE)
+
 #'@export
 
 
+leaguetable <- function(dataset, home, away, score_home, score_away, date, date_start, date_end, matchday, matchday_start, matchday_end, points = c(3,1,0), DC = FALSE, rank_by = c("GD","GF"), HA_tables = FALSE) {
 
-leaguetable <- function(dataset, home, away, score_home, score_away, date, date_start, date_end, matchday, matchday_start, matchday_end, points = c(3,1,0), rank_by = c("Pts","GD","GF"), HA_tables = FALSE) {
+  #set ranking vector
+  rank_crit     <- c("Pts",rank_by)
 
   #get vector of columns to include for calculation
   include       <- c(home, away, score_home, score_away)
@@ -43,7 +47,7 @@ leaguetable <- function(dataset, home, away, score_home, score_away, date, date_
   optionals <- vector()
 
   #name vector for individual team results
-  names_itr <- c("Team","GF","GA")
+  names_itr <- c("Team","Opponent","GF","GA")
 
   #set date range
   if(missing(date)==FALSE) {
@@ -89,39 +93,18 @@ leaguetable <- function(dataset, home, away, score_home, score_away, date, date_
   }
 
 
-  #reduce to relevant dataset
+  #reduce to relevant data
   ds        <- dataset[,include]
   names(ds) <- include_names
 
   #create dataset of inidividual team results
-  hs <- ds[,c("home","score_home","score_away",optionals)]
+  hs <- ds[,c("home","away","score_home","score_away",optionals)]
   names(hs) <- names_itr
   hs$location <- "H"
-  as <- ds[,c("away","score_away","score_home",optionals)]
+  as <- ds[,c("away","home","score_away","score_home",optionals)]
   names(as) <- names_itr
   as$location <- "A"
   ds2 <- rbind(hs,as)
-
-
-  #create lookup table for direct comparison feature, which is not yet implemented
-  if(FALSE){
-
-    #get inverted dataset for direct comparison lookup
-    dsinv            <- ds
-    dsinv$home       <- ds$away
-    dsinv$away       <- ds$home
-    dsinv$score_home <- ds$score_away
-    dsinv$score_away <- ds$score_home
-
-    #bind original and inverted dataset
-    ds3 <- rbind(ds,dsinv)
-
-    #aggregate
-    dclookup <- aggregate(list(ds3$score_home,ds3$score_away), by=list(ds3$home, ds3$away), FUN=sum)
-    names(dclookup) <- c("Team1", "Team2", "Score1", "Score2")
-  }
-
-
 
   #reduce to relevant timeframe if date is provided
   if(missing(date)==FALSE) {
@@ -133,14 +116,16 @@ leaguetable <- function(dataset, home, away, score_home, score_away, date, date_
     ds2     <- ds2[which(ds2$Matchday >= matchday_start & ds2$Matchday <= matchday_end),]
   }
 
-  #calculate points
-  ds2$Pts <- ifelse(ds2$GF>ds2$GA,points[1],ifelse(ds2$GF<ds2$GA,points[3],points[2]))
-
-  #calculate games played, wins, draws, losses ###needs to be worked over, because equal points for two outcomes would distort calculation
-  ds2$W   <- ifelse(ds2$Pts == points[1],1,0)
-  ds2$D   <- ifelse(ds2$Pts == points[2],1,0)
-  ds2$L   <- ifelse(ds2$Pts == points[3],1,0)
+  #calculate games played, wins, draws, losses
+  ds2$R   <- ifelse(ds2$GF>ds2$GA,"W",ifelse(ds2$GF<ds2$GA,"L","D"))
+  ds2$W   <- ifelse(ds2$R == "W",1,0)
+  ds2$D   <- ifelse(ds2$R == "D",1,0)
+  ds2$L   <- ifelse(ds2$R == "L",1,0)
   ds2$P   <- 1
+
+  #calculate points
+  ds2$Pts <- ifelse(ds2$R=="W",points[1],ifelse(ds2$R == "L",points[3], points[2]))
+
 
   #create table by aggregating all desired statistics by team
   table                 <- aggregate(list(ds2$P, ds2$W, ds2$D, ds2$L, ds2$Pts, ds2$GF, ds2$GA), by=list(ds2$Team), FUN=sum)
@@ -150,7 +135,7 @@ leaguetable <- function(dataset, home, away, score_home, score_away, date, date_
   table$GD              <- table$GF - table$GA
 
   #create home and away tables if HA_tables = TRUE
-  if (HA_tables == TRUE) {
+  if (HA_tables==TRUE) {
 
     #aggregate
     tableHA               <- aggregate(list(ds2$P, ds2$W, ds2$D, ds2$L, ds2$Pts, ds2$GF, ds2$GA), by=list(ds2$Team,ds2$location), FUN=sum)
@@ -173,11 +158,78 @@ leaguetable <- function(dataset, home, away, score_home, score_away, date, date_
     table                 <- merge(table, tableHA, by="Team")
   }
 
-  #order table
-  for (by in 1:length(rank_by)) {
+  #separate all teams with equal points an rank them if direct comparison is selected
+  if(DC==TRUE){
 
-      by <- by - 1
-      table <- table[order(-table[,rank_by[length(rank_by)-by]]),]
+    #find counts of points with more than one team
+    same_pts <- aggregate(table$Pts, by=list(table$Pts), FUN = length)
+    uni_pts  <- same_pts[which(same_pts[,2]>1), 1]
+
+    #create empty variables for direct comparison ranking criteria
+    for (rc in 1:length(rank_crit)){
+
+       table[,paste0("DC_",rank_crit[rc])] <- NA
+
+    }
+
+
+    #only execute when at least two teams have the same amount of points
+    if(length(uni_pts>0)){
+
+      #iterate over all counts of points with more than one team
+      for(eq in 1:length(uni_pts)){
+
+        #get teams with equal points
+        eq_teams <- table[which(table$Pts == uni_pts[eq]),"Team"]
+
+        #create subset of games with teams of equal points
+        ds2_sub  <- ds2[which(is.element(ds2$Team, eq_teams) & is.element(ds2$Opponent, eq_teams)),]
+
+        #create sub table for teams with equal points
+        sub_table    <- aggregate(list(ds2_sub$P, ds2_sub$W, ds2_sub$D, ds2_sub$L, ds2_sub$Pts, ds2_sub$GF, ds2_sub$GA), by=list(ds2_sub$Team), FUN=sum)
+        names(sub_table) <- c("Team","P","W","D","L","Pts","GF","GA")
+
+        #compute goal difference
+        sub_table$GD              <- sub_table$GF - sub_table$GA
+
+        #order table for teams in direct comparison
+        for (by in length(rank_crit):1) {
+
+          sub_table <- sub_table[order(-sub_table[,rank_crit[by]]),]
+
+          #write subtable results in main table
+          sub_table$DC_Pts <- sub_table$Pts
+          sub_table$DC_GD  <- sub_table$GD
+
+        }
+
+        #iterate over teams in subtable
+        for (team in 1:nrow(sub_table)) {
+
+          #iterate over ranking criteria
+          for (rc in 1:length(rank_crit)){
+
+            #fill direct comparison variables
+            table[which(table$Team == sub_table[team, "Team"]), paste0("DC_",rank_crit[rc])] <- sub_table[team, rank_crit[rc]]
+
+          }
+        }
+      }
+    }
+  }
+
+  #create ranking vector for final table
+  if(DC==TRUE) {
+    rank_final <- c("Pts",paste0("DC_",rank_crit), rank_by)
+  }else{
+    rank_final <- rank_crit
+  }
+
+
+  #Order table with ranking vector for final table
+  for (by in length(rank_final):1) {
+
+      table <- table[order(-table[,rank_final[by]]),]
 
   }
 
@@ -186,12 +238,15 @@ leaguetable <- function(dataset, home, away, score_home, score_away, date, date_
   Pos              <- 1:nrow(table)
   table            <- cbind(Pos, table)
 
-  #check for same rank by pasting relevant ranking columns
-  table$rank_comp  <- apply(table[,rank_by],1,paste,collapse = " ")
+  #correct position, if all ranking criteria are equal
 
-  #set min position for all teams of same rank
+  #check for same rank by pasting relevant ranking columns
+  table$rank_comp  <- apply(table[,rank_final],1,paste,collapse = " ")
+
+  #iterate over all groups  of teams with equal rank
   for (i in 1:length(unique(table$rank_comp))) {
 
+    #set min position for all teams of same rank
     table[which(table$rank_comp==unique(table$rank_comp)[i]),"Pos"] <- min(table[which(table$rank_comp==unique(table$rank_comp)[i]),"Pos"])
 
   }
@@ -199,8 +254,9 @@ leaguetable <- function(dataset, home, away, score_home, score_away, date, date_
   #remove help column
   table$rank_comp <- NULL
 
-
+  #return(equals)
   return(table)
+
 
 }
 

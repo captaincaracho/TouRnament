@@ -1,7 +1,7 @@
 Package: TouRnament
 Type: Package
 Title: Package with functions related to sports competitions
-Version: 0.2.0
+Version: 0.2.1
 Author: Tobias Wolfanger
 Maintainer: Tobias Wolfanger <tobias.wolfanger@gmx.de>
 Description: A package with functions related to sports competitions.
