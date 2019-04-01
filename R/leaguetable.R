@@ -97,7 +97,7 @@ leaguetable <- function(dataset, home, away, score_home, score_away, date, date_
   ds        <- dataset[,include]
   names(ds) <- include_names
 
-  #create dataset of inidividual team results
+  #create dataset of individual team results
   hs <- ds[,c("home","away","score_home","score_away",optionals)]
   names(hs) <- names_itr
   hs$location <- "H"
@@ -254,7 +254,6 @@ leaguetable <- function(dataset, home, away, score_home, score_away, date, date_
   #remove help column
   table$rank_comp <- NULL
 
-  #return(equals)
   return(table)
 
 
