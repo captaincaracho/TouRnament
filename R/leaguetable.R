@@ -59,12 +59,10 @@
 #'@examples
 #'#create league table for La Liga 1994/95 with two points rewards with home and away results
 #'library(engsoccerdata)
-#'leaguetable(dataset=engsoccerdata::spain[which(engsoccerdata::spain$Season==1994),], home="home", away="visitor", score_home="hgoal", score_away="vgoal", date="Date", points = c(2,1,0), HA_tables = TRUE)
-
+#'leaguetable(dataset=engsoccerdata::spain[which(engsoccerdata::spain$Season==1994),], home="home", away="visitor", score_home="hgoal", score_away="vgoal", date="Date", points = c(2,1,0), rank_by = c("Pts_DC","GD_DC","GF_DC","GD","GF"), DC_display = TRUE)
 #'@export
 
 
-leaguetable(dataset=engsoccerdata::spain[which(engsoccerdata::spain$Season==1994),], home="home", away="visitor", score_home="hgoal", score_away="vgoal", date="Date", points = c(2,1,0), rank_by = c("Pts_DC","GD_DC","GF_DC","GD","GF"), DC_display = TRUE)
 
 leaguetable <- function(dataset, home, away, score_home, score_away, date, date_start, date_end, matchday, matchday_start, matchday_end, points = c(3,1,0), rank_by = c("GD","GF"), HA_display = FALSE, DC_display=FALSE) {
 
