@@ -6,7 +6,7 @@
 \usage{
 leaguetable(dataset, home, away, score_home, score_away, date, date_start,
   date_end, matchday, matchday_start, matchday_end, points = c(3, 1, 0),
-  DC = FALSE, rank_by = c("GD", "GF"), HA_tables = FALSE)
+  rank_by = c("GD", "GF"), HA_tables = FALSE)
 }
 \arguments{
 \item{dataset}{A dataset with the results.}
@@ -33,11 +33,11 @@ leaguetable(dataset, home, away, score_home, score_away, date, date_start,
 
 \item{points}{A vector of integers of length three containing the points awarded for wins, draws and losses. Defaults to c(3,1,0).}
 
-\item{DC}{Logical value to indicate whether direct comparison of teams with equal points should be applied. The ranking of teams with equal numbers of points use the same order as defined in rank_by.}
-
 \item{rank_by}{A character vector with the order of arguments to sort the league table following "Pts". Possible arguments are "GD", "GF", "GA", "W","D","L", Defaults to c("GD","GF").}
 
 \item{HA_table}{Logical value to indicate whether home and away results should be displayed in the table. Defaults to FALSE.}
+
+\item{DC}{Logical value to indicate whether direct comparison of teams with equal points should be applied. The ranking of teams with equal numbers of points use the same order as defined in rank_by.}
 }
 \value{
 A data frame in the form of a league table.
@@ -56,5 +56,5 @@ If a date range and a matchday range are set, the subset of matches that fit bot
 \examples{
 #create league table for La Liga 1994/95 with two points rewards with home and away results
 library(engsoccerdata)
-leaguetable(dataset=engsoccerdata::spain[which(engsoccerdata::spain$Season==1994),], home="home", away="visitor", score_home="hgoal", score_away="vgoal", date="Date", points = c(2,1,0), HA_tables = TRUE, DC = TRUE)
+leaguetable(dataset=engsoccerdata::spain[which(engsoccerdata::spain$Season==1994),], home="home", away="visitor", score_home="hgoal", score_away="vgoal", date="Date", points = c(2,1,0), HA_tables = TRUE)
 }
