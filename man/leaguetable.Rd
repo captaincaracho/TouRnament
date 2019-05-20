@@ -6,7 +6,7 @@
 \usage{
 leaguetable(dataset, home, away, score_home, score_away, date, date_start,
   date_end, matchday, matchday_start, matchday_end, points = c(3, 1, 0),
-  rank_by = c("GD", "GF"), HA_tables = FALSE)
+  rank_by = c("GD", "GF"), HA_display = FALSE, DC_display = FALSE)
 }
 \arguments{
 \item{dataset}{A dataset with the results.}
@@ -33,28 +33,57 @@ leaguetable(dataset, home, away, score_home, score_away, date, date_start,
 
 \item{points}{A vector of integers of length three containing the points awarded for wins, draws and losses. Defaults to c(3,1,0).}
 
-\item{rank_by}{A character vector with the order of arguments to sort the league table following "Pts". Possible arguments are "GD", "GF", "GA", "W","D","L", Defaults to c("GD","GF").}
+\item{rank_by}{A character vector with the order of arguments to sort the league table following "Pts". Defaults to c("GD","GF").}
 
-\item{HA_table}{Logical value to indicate whether home and away results should be displayed in the table. Defaults to FALSE.}
+\item{HA_display}{Logical value to indicate whether home and away results should be displayed in the table. Defaults to FALSE.}
 
-\item{DC}{Logical value to indicate whether direct comparison of teams with equal points should be applied. The ranking of teams with equal numbers of points use the same order as defined in rank_by.}
+\item{DC_display}{Logical value to indicate whether direct comparison variables from ranking vector should be displayed in the table. Defaults to FALSE.}
 }
 \value{
 A data frame in the form of a league table.
 }
 \description{
-Create a league table from individually defined criteria from a results dataset.
+Create a league table by individually defined criteria from a results dataset.
 }
 \details{
 Mandatory parameters are a dataset with match results as well the names of the variables for home and away team and their respective scored goals.
 
-Optional parameters are the point distribution that will be awarded (win, draw, lose), the order of ranking criteria to use (Pts = Points, GD = Goal difference, GF = Goals for),
-the display of additional columns with separate home and away tables and the dates and matchdays to be used for calculation.
+List of abbreviations:
+
+A   = Away (used only as appendix "_A")
+D   = (Matches) Drawn
+DC  = Direct comparison (used only as appendix "_DC")
+GA  = Goals against
+GD  = Goal difference
+GF  = Goals for
+H   = Home (used only as appendix "_H")
+L   = (Matches) Lost
+P   = (Matches) Played
+Pos = Position
+Pts = Points
+W   = (Matches) Won
+
+Possible ranking criteria:
+
+D   = (Matches) Drawn
+GA  = Goals against
+GD  = Goal difference
+GF  = Goals for
+L   = (Matches) Lost
+P   = (Matches) Played
+Pts = Points (Automatically set as most important ranking criterium, doesn't need to be set)
+W   = (Matches) Won
+
+as well as any of the above with the appendix "_DC", for example Pts_DC, GD_DC, which will applied as ranking criteria for teams with an equal amount of points (Pts).
+
+Please be aware that ranking for all criteria is done with descending order. So GA or L can technically be used for ranking, but will result in nonsensical results.
+
+Furteher optional parameters are the point rewards for wins, draws and losses,the display of additional columns with separate home and away tables and the dates and matchdays to be used for calculation.
 
 If a date range and a matchday range are set, the subset of matches that fit both selection criteria will be used for calculation.
 }
 \examples{
 #create league table for La Liga 1994/95 with two points rewards with home and away results
 library(engsoccerdata)
-leaguetable(dataset=engsoccerdata::spain[which(engsoccerdata::spain$Season==1994),], home="home", away="visitor", score_home="hgoal", score_away="vgoal", date="Date", points = c(2,1,0), HA_tables = TRUE)
+leaguetable(dataset=engsoccerdata::spain[which(engsoccerdata::spain$Season==1994),], home="home", away="visitor", score_home="hgoal", score_away="vgoal", date="Date", points = c(2,1,0), rank_by = c("Pts_DC","GD_DC","GF_DC","GD","GF"), DC_display = TRUE)
 }
