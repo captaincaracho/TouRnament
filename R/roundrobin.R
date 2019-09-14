@@ -10,10 +10,13 @@
 #'@return A data frame containing a match schedule including variables for matchday, home and away team.
 #'@references \url{https://portal.dfbnet.org/fileadmin/content/downloads/faq/211111_SZ_DFBnet_extern_mit_Gegenueberstellung4.pdf}
 #'@examples
+#'require("engsoccerdata")
+#'#get german Bundesliga teams from 1986
+#'germany_1986 <- unique(engsoccerdata::germany[engsoccerdata::germany$Season==1986,"home"])
 #'#replicable schedule
-#'roundrobin(teamvector=LETTERS[1:18],second_round=TRUE,match_free=TRUE,randomize=TRUE,seed=1234)
+#'roundrobin(teamvector=germany_1986,second_round=TRUE,match_free=TRUE,randomize=TRUE,seed=1234)
 #'#non replicable schedule
-#'roundrobin(teamvector=LETTERS[1:18],second_round=TRUE,match_free=TRUE,randomize=TRUE)
+#'roundrobin(teamvector=germany_1986,second_round=TRUE,match_free=TRUE,randomize=TRUE)
 #'@export
 
 

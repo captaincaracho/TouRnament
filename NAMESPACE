@@ -2,3 +2,5 @@
 
 export(leaguetable)
 export(roundrobin)
+importFrom(stats,aggregate)
+importFrom(stats,setNames)

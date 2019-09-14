@@ -6,8 +6,8 @@
 \alias{TouRnament-package}
 \title{TouRnament Package}
 \description{
-Contains a function for creating a match schdeule
+Contains a function for creating a match schedule
 }
 \author{
-Tobias Wolfanger \email(tobias.wolfanger@gmx.de)
+Tobias Wolfanger \email{tobias.wolfanger@gmx.de}
 }

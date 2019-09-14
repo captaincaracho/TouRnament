@@ -11,79 +11,85 @@ leaguetable(dataset, home, away, score_home, score_away, date, date_start,
 \arguments{
 \item{dataset}{A dataset with the results.}
 
-\item{home}{The name of the home team column in the dataset as a character string.}
+\item{home}{Name of the home team variable in the dataset as a character string.}
 
-\item{away}{The name of the away team column in the dataset  as a character string.}
+\item{away}{Name of the away team variable in the dataset as a character string.}
 
-\item{score_home}{The name of the home team goals column in the dataset as a character string.}
+\item{score_home}{Name of the home team goals variable in the dataset as a character string.}
 
-\item{score_away}{The name of the away team goals column in the dataset as a character string.}
+\item{score_away}{Name of the away team goals variable in the dataset as a character string.}
 
-\item{date}{The name of the date column in the dataset as a character string (optional).}
+\item{date}{Name of the date variable in the dataset as a character string (optional).}
 
-\item{date_start}{The earliest date to include if not the earliest date in the dataset as a character string in the format "YY-mm-dd" (optional).}
+\item{date_start}{Earliest date to include if not the earliest date in the dataset as a character string in the format "YY-mm-dd" (optional).}
 
-\item{date_end}{The last date to include if not the last date in the dataset as character string in the format "YY-mm-dd" (optional).}
+\item{date_end}{Last date to include if not the last date in the dataset as character string in the format "YY-mm-dd" (optional).}
 
-\item{matchday}{The name of the matchday column in the dataset as a character string (optional).}
+\item{matchday}{Name of the matchday variable in the dataset as a character string (optional).}
 
-\item{matchday_start}{The earliest matchday to include if not the earliest in the dataset as an integer (optional).}
+\item{matchday_start}{Earliest matchday to include if not the earliest in the dataset as an integer (optional).}
 
-\item{matchday_end}{The last matchday to include if not the last in the dataset as an integer (optional).}
+\item{matchday_end}{Last matchday to include if not the last in the dataset as an integer (optional).}
 
-\item{points}{A vector of integers of length three containing the points awarded for wins, draws and losses. Defaults to c(3,1,0).}
+\item{points}{Vector of integers of length three containing the points awarded for wins, draws and losses. Defaults to c(3,1,0).}
 
-\item{rank_by}{A character vector with the order of arguments to sort the league table following "Pts". Defaults to c("GD","GF").}
+\item{rank_by}{Character vector with the order of arguments to sort the league table following "Pts". Defaults to c("GD","GF").}
 
 \item{HA_display}{Logical value to indicate whether home and away results should be displayed in the table. Defaults to FALSE.}
 
 \item{DC_display}{Logical value to indicate whether direct comparison variables from ranking vector should be displayed in the table. Defaults to FALSE.}
 }
 \value{
-A data frame in the form of a league table.
+League table in the form of a data.frame.
 }
 \description{
 Create a league table by individually defined criteria from a results dataset.
 }
 \details{
-Mandatory parameters are a dataset with match results as well the names of the variables for home and away team and their respective scored goals.
+Mandatory input is a dataset with match results and the names of the variables for home and away team and their respective scored goals.
 
 List of abbreviations:
 
-A   = Away (used only as appendix "_A")
-D   = (Matches) Drawn
-DC  = Direct comparison (used only as appendix "_DC")
-GA  = Goals against
-GD  = Goal difference
-GF  = Goals for
-H   = Home (used only as appendix "_H")
-L   = (Matches) Lost
-P   = (Matches) Played
-Pos = Position
-Pts = Points
-W   = (Matches) Won
+\itemize{
+\item A   = Away (used only as appendix "_A"),
+\item D   = (Matches) Drawn,
+\item DC  = Direct comparison (used only as appendix "_DC"),
+\item GA  = Goals against,
+\item GD  = Goal difference,
+\item GF  = Goals for,
+\item H   = Home (used only as appendix "_H"),
+\item L   = (Matches) Lost,
+\item P   = (Matches) Played,
+\item Pos = Position,
+\item Pts = Points,
+\item W   = (Matches) Won
+}
 
-Possible ranking criteria:
+Possible ranking criteria are:
 
-D   = (Matches) Drawn
-GA  = Goals against
-GD  = Goal difference
-GF  = Goals for
-L   = (Matches) Lost
-P   = (Matches) Played
-Pts = Points (Automatically set as most important ranking criterium, doesn't need to be set)
-W   = (Matches) Won
+\itemize{
+\item D   = (Matches) Drawn,
+\item GA  = Goals against,
+\item GD  = Goal difference,
+\item GF  = Goals for,
+\item L   = (Matches) Lost,
+\item P   = (Matches) Played,
+\item Pts = Points (Automatically set as most important ranking criterium, doesn't need to be set),
+\item W   = (Matches) Won
+}
 
-as well as any of the above with the appendix "_DC", for example Pts_DC, GD_DC, which will applied as ranking criteria for teams with an equal amount of points (Pts).
+as well as any of the above with the appendix "_DC", for example Pts_DC or GD_DC, which will applied as ranking criteria for teams with an equal number of points (Pts).
 
 Please be aware that ranking for all criteria is done with descending order. So GA or L can technically be used for ranking, but will result in nonsensical results.
 
-Furteher optional parameters are the point rewards for wins, draws and losses,the display of additional columns with separate home and away tables and the dates and matchdays to be used for calculation.
+Further optional parameters are the point rewards for wins, draws and losses,the display of additional columns with separate home and away tables and the dates and matchdays to be used for calculation.
 
 If a date range and a matchday range are set, the subset of matches that fit both selection criteria will be used for calculation.
 }
 \examples{
-#create league table for La Liga 1994/95 with two points rewards with home and away results
-library(engsoccerdata)
-leaguetable(dataset=engsoccerdata::spain[which(engsoccerdata::spain$Season==1994),], home="home", away="visitor", score_home="hgoal", score_away="vgoal", date="Date", points = c(2,1,0), rank_by = c("Pts_DC","GD_DC","GF_DC","GD","GF"), DC_display = TRUE)
+#league table for La Liga 94/95 with three point rewards (instead of two) and home and away results
+require(engsoccerdata)
+leaguetable(dataset=engsoccerdata::spain[which(engsoccerdata::spain$Season==1994),],
+home="home", away="visitor",score_home="hgoal", score_away="vgoal", date="Date",
+points = c(3,1,0), rank_by = c("Pts_DC","GD_DC","GF_DC","GD","GF"), DC_display = TRUE)
 }
