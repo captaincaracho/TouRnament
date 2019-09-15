@@ -1,6 +1,6 @@
 #'Create a match schedule
 #'
-#'Create a match schedule according to the DFB's (German Soccer Association) "harmonischer Schlüssel-Plan 1-L" which is used as a blueprint for german football leagues.
+#'Create a match schedule according to the DFB's (German Soccer Association) 'harmonischer Schlüssel-Plan 1-L' which is used as a blueprint for german football leagues.
 #'
 #'@param teamvector A character vector of teams.
 #'@param second_round A logical value, indicating whether a second round with changed home and away team should be planned. Defaults to TRUE.
@@ -9,6 +9,7 @@
 #'@param seed A user defined integer to replicate the randomization process if randomize = TRUE.
 #'@return A data frame containing a match schedule including variables for matchday, home and away team.
 #'@references \url{https://portal.dfbnet.org/fileadmin/content/downloads/faq/211111_SZ_DFBnet_extern_mit_Gegenueberstellung4.pdf}
+#'@details The applicability is currently restricted to a minimum of five teams.
 #'@examples
 #'require("engsoccerdata")
 #'#get german Bundesliga teams from 1986
@@ -22,6 +23,7 @@
 
 roundrobin <- function(teamvector,second_round = TRUE,match_free = TRUE,randomize = TRUE , seed) {
 
+  #defensive programming
   try(if(length(teamvector)<5) stop("number of teams has to be at least 5"))
 
   try(if(typeof(second_round)!="logical") stop("second_round has to be logical"))

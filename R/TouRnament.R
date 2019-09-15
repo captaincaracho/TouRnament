@@ -1,6 +1,6 @@
 #'TouRnament Package
 #'
-#'Contains a function for creating a match schedule
+#'Package with functions related to sports competitions
 #'
 #'@docType package
 #'@author Tobias Wolfanger \email{tobias.wolfanger@@gmx.de}

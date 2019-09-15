@@ -43,7 +43,7 @@ leaguetable(dataset, home, away, score_home, score_away, date, date_start,
 League table in the form of a data.frame.
 }
 \description{
-Create a league table by individually defined criteria from a results dataset.
+Create a table for sports (soccer) leagues by individually defined criteria from a results dataset.
 }
 \details{
 Mandatory input is a dataset with match results and the names of the variables for home and away team and their respective scored goals.
@@ -62,8 +62,10 @@ List of abbreviations:
 \item P   = (Matches) Played,
 \item Pos = Position,
 \item Pts = Points,
-\item W   = (Matches) Won
+\item W   = (Matches) Won.
 }
+
+
 
 Possible ranking criteria are:
 

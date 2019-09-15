@@ -1,8 +1,23 @@
 #'Create a league table
 #'
-#'Create a league table by individually defined criteria from a results dataset.
+#'Create a table for sports (soccer) leagues by individually defined criteria from a results dataset.
 #'
-#'Mandatory input is a dataset with match results and the names of the variables for home and away team and their respective scored goals.
+#'@param dataset A dataset with the results.
+#'@param home Name of the home team variable in the dataset as a character string.
+#'@param away Name of the away team variable in the dataset as a character string.
+#'@param score_home Name of the home team goals variable in the dataset as a character string.
+#'@param score_away Name of the away team goals variable in the dataset as a character string.
+#'@param rank_by Character vector with the order of arguments to sort the league table following "Pts". Defaults to c("GD","GF").
+#'@param points Vector of integers of length three containing the points awarded for wins, draws and losses. Defaults to c(3,1,0).
+#'@param date Name of the date variable in the dataset as a character string (optional).
+#'@param date_start Earliest date to include if not the earliest date in the dataset as a character string in the format "YY-mm-dd" (optional).
+#'@param date_end Last date to include if not the last date in the dataset as character string in the format "YY-mm-dd" (optional).
+#'@param matchday Name of the matchday variable in the dataset as a character string (optional).
+#'@param matchday_start Earliest matchday to include if not the earliest in the dataset as an integer (optional).
+#'@param matchday_end Last matchday to include if not the last in the dataset as an integer (optional).
+#'@param HA_display Logical value to indicate whether home and away results should be displayed in the table. Defaults to FALSE.
+#'@param DC_display Logical value to indicate whether direct comparison variables from ranking vector should be displayed in the table. Defaults to FALSE.
+#'@details Mandatory input is a dataset with match results and the names of the variables for home and away team and their respective scored goals.
 #'
 #'List of abbreviations:
 #'
@@ -18,8 +33,9 @@
 #'\item P   = (Matches) Played,
 #'\item Pos = Position,
 #'\item Pts = Points,
-#'\item W   = (Matches) Won
+#'\item W   = (Matches) Won.
 #'}
+#'
 #'
 #'
 #'Possible ranking criteria are:
@@ -44,21 +60,6 @@
 #'If a date range and a matchday range are set, the subset of matches that fit both selection criteria will be used for calculation.
 #'
 #'
-#'@param dataset A dataset with the results.
-#'@param home Name of the home team variable in the dataset as a character string.
-#'@param away Name of the away team variable in the dataset as a character string.
-#'@param score_home Name of the home team goals variable in the dataset as a character string.
-#'@param score_away Name of the away team goals variable in the dataset as a character string.
-#'@param rank_by Character vector with the order of arguments to sort the league table following "Pts". Defaults to c("GD","GF").
-#'@param points Vector of integers of length three containing the points awarded for wins, draws and losses. Defaults to c(3,1,0).
-#'@param date Name of the date variable in the dataset as a character string (optional).
-#'@param date_start Earliest date to include if not the earliest date in the dataset as a character string in the format "YY-mm-dd" (optional).
-#'@param date_end Last date to include if not the last date in the dataset as character string in the format "YY-mm-dd" (optional).
-#'@param matchday Name of the matchday variable in the dataset as a character string (optional).
-#'@param matchday_start Earliest matchday to include if not the earliest in the dataset as an integer (optional).
-#'@param matchday_end Last matchday to include if not the last in the dataset as an integer (optional).
-#'@param HA_display Logical value to indicate whether home and away results should be displayed in the table. Defaults to FALSE.
-#'@param DC_display Logical value to indicate whether direct comparison variables from ranking vector should be displayed in the table. Defaults to FALSE.
 #'@return League table in the form of a data.frame.
 #'@examples
 #'#league table for La Liga 94/95 with three point rewards (instead of two) and home and away results
@@ -71,7 +72,6 @@
 
 
 leaguetable <- function(dataset, home, away, score_home, score_away, date, date_start, date_end, matchday, matchday_start, matchday_end, points = c(3,1,0), rank_by = c("GD","GF"), HA_display = FALSE, DC_display=FALSE) {
-
 
   #set ranking vector
   rank_crit     <- c("Pts",rank_by)

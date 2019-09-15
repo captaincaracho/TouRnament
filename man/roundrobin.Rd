@@ -22,7 +22,10 @@ roundrobin(teamvector, second_round = TRUE, match_free = TRUE,
 A data frame containing a match schedule including variables for matchday, home and away team.
 }
 \description{
-Create a match schedule according to the DFB's (German Soccer Association) "harmonischer Schlüssel-Plan 1-L" which is used as a blueprint for german football leagues.
+Create a match schedule according to the DFB's (German Soccer Association) 'harmonischer Schlüssel-Plan 1-L' which is used as a blueprint for german football leagues.
+}
+\details{
+The applicability is currently restricted to a minimum of five teams.
 }
 \examples{
 require("engsoccerdata")

@@ -6,7 +6,7 @@
 \alias{TouRnament-package}
 \title{TouRnament Package}
 \description{
-Contains a function for creating a match schedule
+Package with functions related to sports competitions
 }
 \author{
 Tobias Wolfanger \email{tobias.wolfanger@gmx.de}
