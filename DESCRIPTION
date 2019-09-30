@@ -1,7 +1,7 @@
 Package: TouRnament
 Type: Package
-Title: Package with Functions Related to Sports Competitions
-Version: 0.2.4
+Title: Tools for Sports Competitions
+Version: 0.2.5
 Authors@R: person("Tobias", "Wolfanger", email = "tobias.wolfanger@gmx.de", role = c("aut","cre"))
 Description: Contains two functions related to sports competitions. One to create league tables and one to create a match schedule.
 BugReports: https://github.com/captaincaracho/TouRnament/issues
