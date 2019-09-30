@@ -1,6 +1,6 @@
 #'TouRnament Package
 #'
-#'Tools Sports Competitions
+#'Tools for Sports Competitions
 #'
 #'@docType package
 #'@author Tobias Wolfanger \email{tobias.wolfanger@@gmx.de}
