@@ -6,7 +6,7 @@
 \alias{TouRnament-package}
 \title{TouRnament Package}
 \description{
-Package with Functions Related to Sports Competitions
+Tools for Sports Competitions
 }
 \author{
 Tobias Wolfanger \email{tobias.wolfanger@gmx.de}

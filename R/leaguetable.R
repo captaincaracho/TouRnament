@@ -1,6 +1,6 @@
 #'Create a league table
 #'
-#'Create a table for sports (soccer) leagues by individually defined criteria from a results dataset.
+#'Create a table for sports leagues with three way results (e.g. soccer, handball) by individually defined criteria from a results dataset.
 #'
 #'@param dataset A dataset with the results.
 #'@param home Name of the home team variable in the dataset as a character string.
